@@ -14,7 +14,7 @@ Then you can manipulate the database through the database client.
 
 ## Currently supported commands
 Using `put [key] [value]` to store a KV pair to the database.  
-Using `get [key]` to get the value of the key.
+Using `get [key]` to get the value of the key.  
 Using `delete [key]` to delete a KV pair.
 
 ## TODO
