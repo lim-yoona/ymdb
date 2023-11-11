@@ -24,16 +24,18 @@ func NewRouter(server2 *server.Server) *Router {
 func (r *Router) ReadMsQueue() {
 	for {
 		message := <-r.server.MsQueue
-		go r.Handle(*message)
+		go r.Handle(*message, false)
 	}
 }
 
-func (r *Router) Handle(imessage tcpack.Imessage) {
+func (r *Router) Handle(imessage tcpack.Imessage, restore bool) {
 	switch imessage.GetMsgId() {
 	case util.PUTID:
-		err := r.writeWAL(imessage)
-		if err != nil {
-			log.Error().Err(err).Msg("[Route] >>> Route Handle WriteWAL failed")
+		if !restore {
+			err := r.writeWAL(imessage)
+			if err != nil {
+				log.Error().Err(err).Msg("[Route] >>> Route Handle WriteWAL failed")
+			}
 		}
 		var putMsg util.Put
 		json.Unmarshal(imessage.GetMsgData(), &putMsg)
@@ -53,6 +55,12 @@ func (r *Router) Handle(imessage tcpack.Imessage) {
 		r.server.ReQueue <- msgSend
 		break
 	case util.DELETEID:
+		if !restore {
+			err := r.writeWAL(imessage)
+			if err != nil {
+				log.Error().Err(err).Msg("[Route] >>> Route Handle WriteWAL failed")
+			}
+		}
 		var deleteMsg util.Other
 		json.Unmarshal(imessage.GetMsgData(), &deleteMsg)
 		r.db.Delete(deleteMsg.Data)
@@ -61,14 +69,29 @@ func (r *Router) Handle(imessage tcpack.Imessage) {
 	}
 }
 func (r *Router) writeWAL(imessage tcpack.Imessage) error {
-	err := r.db.WriteRestoreWAL(imessage.GetMsgData())
+	err := r.db.WriteRestoreWAL(imessage)
 	if err != nil {
 		log.Error().Err(err).Msg("[Route] >>> route WriteWAL failed")
 	}
 	return err
 }
 
+func (r *Router) Restore() {
+	restoreCount := 0
+	go r.db.Restore()
+	for {
+		restoreEntry := <-r.db.RestoreQueue
+		if restoreEntry == nil {
+			break
+		}
+		restoreCount++
+		go r.Handle(restoreEntry, true)
+	}
+	log.Info().Msgf("[DB] >>> Restore finished! Total restored %s entries.", restoreCount)
+}
+
 func RouterStart(server2 *server.Server) {
 	router := NewRouter(server2)
+	router.Restore()
 	router.ReadMsQueue()
 }

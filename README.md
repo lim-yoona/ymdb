@@ -1,5 +1,5 @@
 # tinyKVStore
-tinyKVStore is a simple KV storage system that supports storing KV pairs of string types. It maintains a skiplist in memory to speed up key retrieval and stores values in WAL files on disk.  
+tinyKVStore is a simple KV storage system that supports storing KV pairs of string types. It maintains a skiplist in memory to speed up key retrieval and stores values in WAL files on disk. tinyKVStore also supports crash consistency.  
 
 ## Config
 Before using, you need to modify some config items in `./config/ymDB.yaml`.
@@ -22,4 +22,6 @@ Using `delete [key]` to delete a KV pair.
 
 ## TODO
 tinyKVStore is under development and future plans are as follows:  
-- Implement crash consistency
+- Support high concurrency.
+- Completion benchmark.
+- Support distributed KV storage.

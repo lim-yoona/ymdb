@@ -3,21 +3,41 @@ package db
 import (
 	"bytes"
 	"encoding/gob"
+	"github.com/lim-yoona/tcpack"
 	"github.com/rosedblabs/wal"
 	"github.com/rs/zerolog/log"
 	"github/lim-yoona/tinyKVStore/index"
 	"github/lim-yoona/tinyKVStore/options"
+	"io"
+	"os"
 )
 
 type DB struct {
-	index      index.Index
-	wal        *wal.WAL
-	restoreWAL *wal.WAL
-	closed     bool
-	options    options.Option
+	index        index.Index
+	wal          *wal.WAL
+	restoreWAL   *wal.WAL
+	closed       bool
+	options      options.Option
+	RestoreQueue chan *tcpack.Message
+	isRestore    bool
 }
 
 func NewDB() *DB {
+	// 处理，如果已经存在WAL文件，则直接加载以初始化db
+	resFileName := "\\000000001.SEG"
+	restoreWALFilePath := options.DefalutOption.RestoreWALOption.DirPath + resFileName
+	_, err2 := os.Stat(restoreWALFilePath)
+	var restore bool
+	restore = false
+	// 如果文件已存在
+	if !os.IsNotExist(err2) {
+		restore = true
+		log.Info().Msgf("[DB] >>> Find the WAL file is exist, restore from %s", restoreWALFilePath)
+		// 删除用于存储的WAL
+		walFilePath := options.DefalutOption.WalOption.DirPath + resFileName
+		os.Remove(walFilePath)
+	}
+	// 创建或者打开wal文件
 	walDefault, err := wal.Open(options.DefalutOption.WalOption)
 	log.Info().Msgf("[DB] >>> storeWAL path is %s", options.DefalutOption.WalOption.DirPath)
 	if err != nil {
@@ -29,11 +49,13 @@ func NewDB() *DB {
 		log.Panic().Err(err).Msg("[DB] >>> Create restoreWAL failed")
 	}
 	return &DB{
-		index:      index.NewSkiplistIndex(),
-		wal:        walDefault,
-		restoreWAL: restoreWALDefault,
-		closed:     false,
-		options:    options.DefalutOption,
+		index:        index.NewSkiplistIndex(),
+		wal:          walDefault,
+		restoreWAL:   restoreWALDefault,
+		closed:       false,
+		options:      options.DefalutOption,
+		RestoreQueue: make(chan *tcpack.Message, 100),
+		isRestore:    restore,
 	}
 }
 func (db *DB) Put(key string, value string) bool {
@@ -66,10 +88,31 @@ func (db *DB) Delete(key string) (*wal.ChunkPosition, error) {
 	return chunkPosition, nil
 }
 
-func (db *DB) WriteRestoreWAL(data []byte) error {
-	_, err := db.restoreWAL.Write(data)
+func (db *DB) WriteRestoreWAL(data tcpack.Imessage) error {
+	buf := new(bytes.Buffer)
+	encoder := gob.NewEncoder(buf)
+	encoder.Encode(data)
+	_, err := db.restoreWAL.Write(buf.Bytes())
 	if err != nil {
 		log.Error().Err(err).Msg("[DB] >>> Write restoreWAL failed")
 	}
 	return err
+}
+
+func (db *DB) Restore() {
+	if db.isRestore {
+		log.Info().Msg("[DB] >>> ymDB restore...")
+		reader := db.restoreWAL.NewReader()
+		for {
+			val, _, err := reader.Next()
+			if err == io.EOF {
+				break
+			}
+			var entry tcpack.Message
+			decoder := gob.NewDecoder(bytes.NewBuffer(val))
+			_ = decoder.Decode(&entry)
+			db.RestoreQueue <- &entry
+		}
+	}
+	close(db.RestoreQueue)
 }
