@@ -1,18 +1,30 @@
 package options
 
-import "github.com/rosedblabs/wal"
+import (
+	"github.com/rosedblabs/wal"
+	"github/lim-yoona/tinyKVStore/config"
+)
 
 type Option struct {
-	WalOption wal.Options
+	WalOption        wal.Options
+	RestoreWALOption wal.Options
 }
 
-var DefalutOption = Option{
-	WalOption: struct {
-		DirPath        string
-		SegmentSize    int64
-		SegmentFileExt string
-		BlockCache     uint32
-		Sync           bool
-		BytesPerSync   uint32
-	}{DirPath: "E:\\project-about\\tinyKV\\walDir", SegmentSize: wal.GB, SegmentFileExt: ".SEG", BlockCache: 32 * wal.KB * 10, Sync: false, BytesPerSync: 0},
+var DefalutOption Option
+
+func DefaultOption() {
+	DefalutOption.WalOption = wal.Options{
+		DirPath:        config.DefaultConfig.Wal.Store.Path,
+		SegmentSize:    wal.GB,
+		SegmentFileExt: config.DefaultConfig.Wal.SegmentFileExt,
+		BlockCache:     32 * wal.KB * 10,
+		Sync:           false, BytesPerSync: 0,
+	}
+	DefalutOption.RestoreWALOption = wal.Options{
+		DirPath:        config.DefaultConfig.Wal.Restore.Path,
+		SegmentSize:    wal.GB,
+		SegmentFileExt: config.DefaultConfig.Wal.SegmentFileExt,
+		BlockCache:     32 * wal.KB * 10,
+		Sync:           false, BytesPerSync: 0,
+	}
 }

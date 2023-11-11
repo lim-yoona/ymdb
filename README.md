@@ -1,5 +1,8 @@
 # tinyKVStore
-tinyKVStore is a simple KV storage system that supports storing KV pairs of string types. It maintains a skiplist in memory to speed up key retrieval and stores values on disk.  
+tinyKVStore is a simple KV storage system that supports storing KV pairs of string types. It maintains a skiplist in memory to speed up key retrieval and stores values in WAL files on disk.  
+
+## Config
+Before using, you need to modify some config items in `./config/ymDB.yaml`.
 
 ## Usage
 Run the following command to start a tingKVStore database:  
@@ -8,7 +11,7 @@ go run main.go
 ```
 Run the following command to start a tinyKVStore database client:  
 ```shell
-go run db-cli.go
+go run ymDB-cli.go
 ```
 Then you can manipulate the database through the database client.  
 

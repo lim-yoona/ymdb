@@ -1,0 +1,17 @@
+---
+# 关于wal文件的配置
+wal:
+  # 存储数据的wal文件的位置，可以自定义
+  store:
+    path: 'E:\\project-about\\tinyKV\\walDir\\store'
+  # 存储指令的wal文件的位置，可以自定义，用于崩溃恢复
+  restore:
+    path: 'E:\\project-about\\tinyKV\\walDir\\restore'
+  # wal文件类型
+  segmentFileExt: '.SEG'
+
+# 一些关于数据库服务端和客户端的网络配置
+network:
+  # 配置服务端口
+  port: :8099
+...
