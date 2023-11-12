@@ -24,7 +24,7 @@ func NewRouter(server2 *server.Server) *Router {
 func (r *Router) ReadMsQueue() {
 	for {
 		message := <-r.server.MsQueue
-		go r.Handle(*message, false)
+		go r.Handle(message, false)
 	}
 }
 

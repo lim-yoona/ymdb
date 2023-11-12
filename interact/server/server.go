@@ -9,14 +9,14 @@ import (
 
 type Server struct {
 	port    string
-	MsQueue chan *tcpack.Imessage
+	MsQueue chan tcpack.Imessage
 	ReQueue chan *tcpack.Message
 }
 
 func NewServer() *Server {
 	return &Server{
 		port:    config.DefaultConfig.Network.Port,
-		MsQueue: make(chan *tcpack.Imessage, 100),
+		MsQueue: make(chan tcpack.Imessage, 100),
 		ReQueue: make(chan *tcpack.Message, 100),
 	}
 }
@@ -44,7 +44,7 @@ func (s *Server) Start() {
 				if err != nil {
 					log.Error().Err(err).Msg("[Server] >>> Unpack on conn occur error")
 				}
-				s.MsQueue <- &msg
+				s.MsQueue <- msg
 			}
 		}()
 		go func() {
