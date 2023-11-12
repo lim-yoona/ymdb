@@ -1,4 +1,4 @@
-# tinyKVStore
+# ymdb
 ymdb is a simple KV storage system that supports storing KV pairs of string types. It maintains a skiplist in memory to speed up key retrieval and stores values in WAL files on disk. ymdb also supports crash consistency.  
 
 ## Config
