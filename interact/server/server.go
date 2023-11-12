@@ -2,8 +2,8 @@ package server
 
 import (
 	"github.com/lim-yoona/tcpack"
+	"github.com/lim-yoona/ymdb/config"
 	"github.com/rs/zerolog/log"
-	"github/lim-yoona/tinyKVStore/config"
 	"net"
 )
 

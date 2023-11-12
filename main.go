@@ -1,11 +1,11 @@
 package main
 
 import (
+	"github.com/lim-yoona/ymdb/config"
+	"github.com/lim-yoona/ymdb/interact/server"
+	"github.com/lim-yoona/ymdb/options"
+	"github.com/lim-yoona/ymdb/route"
 	"github.com/rs/zerolog"
-	"github/lim-yoona/tinyKVStore/config"
-	"github/lim-yoona/tinyKVStore/interact/server"
-	"github/lim-yoona/tinyKVStore/options"
-	"github/lim-yoona/tinyKVStore/route"
 )
 
 // 服务端，之后可能会进行封装

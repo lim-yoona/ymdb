@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"encoding/gob"
 	"github.com/lim-yoona/tcpack"
+	"github.com/lim-yoona/ymdb/index"
+	"github.com/lim-yoona/ymdb/options"
 	"github.com/rosedblabs/wal"
 	"github.com/rs/zerolog/log"
-	"github/lim-yoona/tinyKVStore/index"
-	"github/lim-yoona/tinyKVStore/options"
 	"io"
 	"os"
 )

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github/lim-yoona/tinyKVStore/config"
-	"github/lim-yoona/tinyKVStore/interact/client"
+	"github.com/lim-yoona/ymdb/config"
+	"github.com/lim-yoona/ymdb/interact/client"
 )
 
 func main() {

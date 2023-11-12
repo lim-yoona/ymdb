@@ -1,8 +1,8 @@
 package options
 
 import (
+	"github.com/lim-yoona/ymdb/config"
 	"github.com/rosedblabs/wal"
-	"github/lim-yoona/tinyKVStore/config"
 )
 
 type Option struct {
