@@ -3,10 +3,10 @@
 wal:
   # 存储数据的wal文件的位置，可以自定义
   store:
-    path: 'E:\\project-about\\tinyKV\\walDir\\store'
+    path: '/root/ymdb/walDir/store'
   # 存储指令的wal文件的位置，可以自定义，用于崩溃恢复
   restore:
-    path: 'E:\\project-about\\tinyKV\\walDir\\restore'
+    path: '/root/ymdb/walDir/restore'
   # wal文件类型
   segmentFileExt: '.SEG'
 

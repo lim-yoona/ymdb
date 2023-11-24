@@ -3,13 +3,14 @@ package db
 import (
 	"bytes"
 	"encoding/gob"
+	"io"
+	"os"
+
 	"github.com/lim-yoona/tcpack"
 	"github.com/lim-yoona/ymdb/index"
 	"github.com/lim-yoona/ymdb/options"
 	"github.com/rosedblabs/wal"
 	"github.com/rs/zerolog/log"
-	"io"
-	"os"
 )
 
 type DB struct {
@@ -24,7 +25,7 @@ type DB struct {
 
 func NewDB() *DB {
 	// 处理，如果已经存在WAL文件，则直接加载以初始化db
-	resFileName := "\\000000001.SEG"
+	resFileName := "/000000001.SEG"
 	restoreWALFilePath := options.DefalutOption.RestoreWALOption.DirPath + resFileName
 	_, err2 := os.Stat(restoreWALFilePath)
 	var restore bool
