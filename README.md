@@ -5,6 +5,8 @@ ymdb is a simple KV storage system that supports storing KV pairs of string type
 Before using, you need to modify some config items in `./config/ymDB.yaml`.
 
 ## Usage
+
+### By using source code
 Run the following command to start a ymdb database server:  
 ```shell
 go run main.go
@@ -14,6 +16,26 @@ Run the following command to start a ymdb database client:
 go run ymDB-cli.go
 ```
 Then you can manipulate ymdb through the database client.  
+
+### By using Docker image
+Firstly, use the following command to pull the Docker image of the ymdb server:  
+```shell
+docker pull yoonamessi/ymdb:0.1
+```
+Then, use the following command to run a Docker container:  
+```shell
+docker run -v ${your_host_store_path}:${path_in_ymDB.yaml} -v ${your_host_restore_path}:${path_in_ymDB.yaml} -p ${host_port}:${port_in_ymDB.yaml} -d  ymdb:0.1
+```
+This is an example:  
+```shell
+docker run -v /root/ymdbdata/walDir/store:/root/ymdb/walDir/store -v /root/ymdbdata/walDir/restore:/root/ymdb/walDir/restore -p 8099:8099 -d  ymdb:0.1
+```
+Run the following command to start a ymdb database client(Note that the port connected by the client must match the port exposed by the container to the host):  
+```shell
+go run ymDB-cli.go
+```
+Then you can manipulate ymdb through the database client.
+
 
 ## Currently supported commands
 Using `put [key] [value]` to store a KV pair to the database.  
