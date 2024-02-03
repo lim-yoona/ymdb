@@ -1,22 +1,31 @@
 # ymdb
-ymdb is a simple KV storage system that supports storing KV pairs of string types. It maintains a skiplist in memory to speed up key retrieval and stores values in WAL files on disk. ymdb also supports crash consistency.  
+ymdb is a simple distributed key-value storage system. It maintains a skip-list in memory to speed up key retrieval and stores values in WAL files on disk. You can run ymdb on a cluster, distributed ymdb uses the `raft` protocol for distributed consensus and a consistent hashing algorithm for data partitioning and load balancing. ymdb also supports crash consistency.
 
 ## Config
-Before using, you need to modify some config items in `./config/ymDB.yaml`.
+Before running ymdb, you need to prepare some directories:
+
+1. wal file directory: you can set wal file directory in `./config/ymDB.yaml` or set wal file directory by flags when execute `main`(eg. `./main --store_file_path ./wal/store --restore_file_path ./wal/restore`).  
+2. raft data directory: you can set raft data directory by flages when execute `main`(eg. `./main --raft_data_dir ./ymdb-cluster`)
+   
+For a more detailed directory organization and setup, see the example under `example` folder.
 
 ## Usage
 
-### By using source code
-Run the following command to start a ymdb database server:  
-```shell
-go run main.go
-```
-Run the following command to start a ymdb database client:  
-```shell
-go run ymDB-cli.go
-```
-Then you can manipulate ymdb through the database client.  
+## ymdb on a cluster
+An example of ymdb running on a cluster is provided under the `example` folder:
 
+Under the ymdb project directory:  
+```shell
+./example/run_ymdb_cluster.sh
+```
+Now you have ymdb running on a nine-node cluster with three partitions.
+
+You can then run a cluster client and interact with the ymdb cluster by executing the following commands:
+```shell
+./example/run_cluster_client.sh
+```
+
+## ymdb on a single machine
 ### By using Docker image
 Firstly, use the following command to pull the Docker image of the ymdb server:  
 ```shell
@@ -42,12 +51,9 @@ Using `put [key] [value]` to store a KV pair to the database.
 Using `get [key]` to get the value of the key.  
 Using `delete [key]` to delete a KV pair.
 
-## TODO
-ymdb is under development and future plans are as follows:  
-- Support high concurrency.
-- Support distributed KV storage.
 
-## Benchmark
+
+## Benchmark on a single machine
 The benchmark result is a bit weird because put doesn't have to wait for ymdb to return, get needs to get the query result, and there's also the overhead involved in the communication.  
 ```shell
 goos: windows
