@@ -2,6 +2,7 @@ package route
 
 import (
 	"encoding/json"
+
 	"github.com/lim-yoona/tcpack"
 	"github.com/lim-yoona/ymdb/db"
 	"github.com/lim-yoona/ymdb/interact/server"
@@ -41,6 +42,12 @@ func (r *Router) Handle(imessage tcpack.Imessage, restore bool) {
 		json.Unmarshal(imessage.GetMsgData(), &putMsg)
 		r.db.Put(putMsg.Key, putMsg.Value)
 		log.Info().Msgf("[Route] >>> Put data: %s", putMsg)
+		sendMsg := &util.Other{
+			Data: "PUT status = ok",
+		}
+		marshal, _ := json.Marshal(sendMsg)
+		msgSend := tcpack.NewMessage(util.RESPONSEID, uint32(len(marshal)), marshal)
+		r.server.ReQueue <- msgSend
 		break
 	case util.GETID:
 		var getMsg util.Other
@@ -65,6 +72,12 @@ func (r *Router) Handle(imessage tcpack.Imessage, restore bool) {
 		json.Unmarshal(imessage.GetMsgData(), &deleteMsg)
 		r.db.Delete(deleteMsg.Data)
 		log.Info().Msgf("[Route] >>> Delete data: %s", deleteMsg)
+		sendMsg := &util.Other{
+			Data: "DELETE status = ok",
+		}
+		marshal, _ := json.Marshal(sendMsg)
+		msgSend := tcpack.NewMessage(util.RESPONSEID, uint32(len(marshal)), marshal)
+		r.server.ReQueue <- msgSend
 		break
 	}
 }

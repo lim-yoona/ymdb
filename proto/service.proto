@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option go_package = "./;proto";
+
+package proto;
+
+service Example {
+	rpc SendMsg(SendMsgRequest) returns (SendMsgResponse) {}
+}
+
+message SendMsgRequest {
+	uint32 Id = 1;
+	uint32 DataLen = 2;
+	bytes Data = 3;
+}
+
+message SendMsgResponse {
+	uint32 Id = 1;
+	uint32 DataLen = 2;
+	bytes Data = 3;
+}
