@@ -1,5 +1,11 @@
 # ymdb
-ymdb is a simple distributed key-value storage system. It maintains a skip-list in memory to speed up key retrieval and stores values in WAL files on disk. You can run ymdb on a cluster, distributed ymdb uses the `raft` protocol for distributed consensus and a consistent hashing algorithm for data partitioning and load balancing. ymdb also supports crash consistency.
+_**ymdb** is a simple distributed key-value storage system._ 
+
+**ymdb** maintains a skip-list in memory to speed up key retrieval and stores values in WAL files on disk. 
+
+You can run **ymdb** on a cluster, **distributed ymdb** uses the `raft` protocol for **distributed consensus** and a consistent hashing algorithm for **data partitioning and load balancing**. 
+
+**ymdb** also supports **crash consistency**.
 
 ## Config
 Before running ymdb, you need to prepare some directories:
@@ -7,27 +13,27 @@ Before running ymdb, you need to prepare some directories:
 1. wal file directory: you can set wal file directory in `./config/ymDB.yaml` or set wal file directory by flags when execute `main`(eg. `./main --store_file_path ./wal/store --restore_file_path ./wal/restore`).  
 2. raft data directory: you can set raft data directory by flages when execute `main`(eg. `./main --raft_data_dir ./ymdb-cluster`)
    
-For a more detailed directory organization and setup, see the example under `example` folder.
+For a more detailed directory organization and setup, see the example under [example](https://github.com/lim-yoona/ymdb/tree/main/example) folder.
 
 ## Usage
 
 ## ymdb on a cluster
-An example of ymdb running on a cluster is provided under the `example` folder:
+An example of **ymdb** running on a cluster is provided under the [example](https://github.com/lim-yoona/ymdb/tree/main/example) folder:
 
-Under the ymdb project directory:  
+Start an **ymdb cluster** by executing the following script under the ymdb project folder:  
 ```shell
 ./example/run_ymdb_cluster.sh
 ```
 Now you have ymdb running on a nine-node cluster with three partitions.
 
-You can then run a cluster client and interact with the ymdb cluster by executing the following commands:
+You can then run a cluster client and interact with the **ymdb cluster** by executing the following script:  
 ```shell
 ./example/run_cluster_client.sh
 ```
 
 ## ymdb on a single machine
 ### By using Docker image
-Firstly, use the following command to pull the Docker image of the ymdb server:  
+Firstly, use the following command to pull the Docker image of the **ymdb server**:  
 ```shell
 docker pull yoonamessi/ymdb:0.1
 ```
@@ -39,7 +45,7 @@ This is an example:
 ```shell
 docker run -v /root/ymdbdata/walDir/store:/root/ymdb/walDir/store -v /root/ymdbdata/walDir/restore:/root/ymdb/walDir/restore -p 8099:8099 -d  ymdb:0.1
 ```
-Run the following command to start a ymdb database client(Note that the port connected by the client must match the port exposed by the container to the host):  
+Run the following command to start a **ymdb client**(Note that the port connected by the client must match the port exposed by the container to the host):  
 ```shell
 go run ymDB-cli.go
 ```
