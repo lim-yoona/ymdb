@@ -1,4 +1,6 @@
 # ymdb
+English | [简体中文](README-CN.md)
+
 _**ymdb** is a simple distributed key-value storage system._ 
 
 **ymdb** maintains a skip-list in memory to speed up key retrieval and stores values in WAL files on disk. 
@@ -7,11 +9,15 @@ You can run **ymdb** on a cluster, **distributed ymdb** uses the `raft` protocol
 
 **ymdb** also supports **crash consistency**.
 
+## Architecture
+
+[![Architecture](https://s11.ax1x.com/2024/02/17/pFJnTYQ.jpg)](https://imgse.com/i/pFJnTYQ)
+
 ## Config
 Before running ymdb, you need to prepare some directories:
 
 1. wal file directory: you can set wal file directory in `./config/ymDB.yaml` or set wal file directory by flags when execute `main`(eg. `./main --store_file_path ./wal/store --restore_file_path ./wal/restore`).  
-2. raft data directory: you can set raft data directory by flages when execute `main`(eg. `./main --raft_data_dir ./ymdb-cluster`)
+2. raft data directory: you can set raft data directory by flags when execute `main`(eg. `./main --raft_data_dir ./ymdb-cluster`)
    
 For a more detailed directory organization and setup, see the example under [example](https://github.com/lim-yoona/ymdb/tree/main/example) folder.
 
